@@ -20,7 +20,10 @@ let package = Package(
     targets: [
         .target(
             name: targetName,
-            dependencies: ["Realm"]),
+            dependencies: [
+                .product(name: "RealmSwift", package: "Realm")
+            ]
+        ),
         .testTarget(
             name: "BasementTests",
             dependencies: ["Basement"]),
