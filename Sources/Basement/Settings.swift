@@ -1,4 +1,6 @@
-import SwiftUI
+import Foundation
+import RealmSwift
+
 extension Container {
     /// A list of predefined settings that `Basement` reslies on.
     /// - NOTE: This is not required to stick only to this list since `SettingsList`
