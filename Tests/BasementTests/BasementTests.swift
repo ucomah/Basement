@@ -1,7 +1,7 @@
-    import XCTest
-    @testable import Basement
+import XCTest
+@testable import Basement
 
-    final class BasementTests: XCTestCase {
-        func testExample() {
-        }
+final class ContainerTests: XCTestCase {
+    func testExample() {
     }
+}
