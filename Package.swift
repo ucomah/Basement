@@ -15,7 +15,7 @@ let package = Package(
             targets: [targetName]),
     ],
     dependencies: [
-        .package(name: "Realm", url: "https://github.com/realm/realm-cocoa.git", from: "10.15.0")
+        .package(name: "Realm", url: "https://github.com/realm/realm-cocoa.git", from: "10.0.0")
     ],
     targets: [
         .target(
