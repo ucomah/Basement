@@ -17,7 +17,7 @@ public extension LocalPathRepresentable {
 }
 
 @frozen
-public struct FolderPath: LocalPathRepresentable {
+public struct FolderPath: LocalPathRepresentable, Hashable {
     public let searchPath: FileManager.SearchPathDirectory
     public let subPath: String?
 
@@ -27,4 +27,15 @@ public struct FolderPath: LocalPathRepresentable {
     }
 
     public static var `default`: FolderPath { .init(.documentDirectory, subPath: "Realm") }
+}
+
+public extension FileManager {
+
+    func folderItems(at url: URL, options: FileManager.DirectoryEnumerationOptions = []) throws -> [URL] {
+        try contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: options)
+    }
+
+    func cleanFolder(at url: URL) throws {
+        try folderItems(at: url, options: []).forEach { try removeItem(at: $0) }
+    }
 }
