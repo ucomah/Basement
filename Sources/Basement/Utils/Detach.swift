@@ -28,30 +28,28 @@ extension Object: DetachableObject {
     }
 }
 
-extension List: DetachableObject where Element: DetachableObject {
-    public func detached() -> List<Element> {
-        let result = List<Element>()
-        result.append(objectsIn: self.map { $0.detached() })
-        return result
-    }
-}
-
 extension List: DetachableObject {
     public func detached() -> List<Element> {
         let result = List<Element>()
-        // Primtives are being passed by value - don't need to recreate
-        result.append(objectsIn: self.map { $0 })
+        forEach {
+            if let detachable = $0 as? DetachableObject {
+                guard let detached = detachable.detached() as? Element else { return }
+                result.append(detached)
+            } else {
+                result.append($0) // Primtives are being passed by value - don't need to recreate
+            }
+        }
         return result
     }
 }
 
-public extension Sequence where Iterator.Element: Object {
+public extension Sequence where Element: Object {
     func detached() -> [Element] {
         self.map { $0.detached() }
     }
 }
 
-public extension RealmCollection where Iterator.Element: Object {
+public extension RealmCollection where Element: Object {
     func detached() -> [Element] {
         self.map { $0.detached() }
     }
