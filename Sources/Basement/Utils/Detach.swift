@@ -33,6 +33,7 @@ extension List: DetachableObject {
         let result = List<Element>()
         forEach {
             if let detachable = $0 as? DetachableObject {
+                assert(detachable.detached() as? Element)
                 guard let detached = detachable.detached() as? Element else { return }
                 result.append(detached)
             } else {
