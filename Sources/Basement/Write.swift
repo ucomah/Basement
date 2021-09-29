@@ -4,7 +4,12 @@ import Foundation
 public final class WriteTransaction {
 
     private let _realm: RealmWrapper
-    private var realm: Realm { _realm.realm }
+    internal var realm: Realm { _realm.realm }
+    
+    public var container: Container? {
+        try? Container(configuration: realm.configuration)
+    }
+    
     internal init(realm: RealmWrapper) {
         self._realm = realm
     }

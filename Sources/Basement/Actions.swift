@@ -3,6 +3,12 @@ import Foundation
 
 extension Container {
 
+    public func write(_ block: (WriteTransaction) throws -> Void) throws {
+        let wrapper = try self.wrapper()
+        let transaction = WriteTransaction(realm: wrapper)
+        try wrapper.realm.write { try block(transaction) }
+    }
+    
     /// Write transation in current thread (queue)
     public func write<T: ThreadConfined>(_ obj: T, block: (T, WriteTransaction) throws -> Void) throws {
         let wrapper = try self.wrapper()
@@ -27,32 +33,25 @@ extension Container {
             errorHandler(error)
         }
     }
-}
-
-#if canImport(Combine)
-import Combine
-
-@available(iOS 13.0, macOS 10.15, *)
-extension Container {
     
-    public func publishWrite<T: ThreadConfined>(_ obj: T,
-                                              on queue: DispatchQueue?,
-                                              block: @escaping ((T, WriteTransaction) throws -> Void)) -> AnyPublisher<T, Error> {
-        let future = Future<T, Error> { [weak self] seal in
-            guard let this = self else {
-                seal(.failure(Realm.Error.callFailed))
-                return
-            }
-            this.writeAsync(obj, queue: queue) { obj, tr in
-                try block(obj, tr)
-                seal(.success(obj))
-            } errorHandler: { error in
-                seal(.failure(error))
-            }
+    public func item<Item: Object, KeyType>(_ type: Item.Type, forPrimaryKey id: KeyType) -> Item? {
+        self.realm?.object(ofType: type, forPrimaryKey: id)
+    }
+
+    public func items<Item: Object>(_ type: Item.Type) throws -> Results<Item>? {
+        self.realm?.objects(type)
+    }
+
+    public func deleteAll() throws {
+        try self.write { tr in
+            tr.realm.deleteAll()
         }
-        return AnyPublisher(future)
+    }
+
+    /// - WARNING: Removes all Realm files physically. Use carefully!
+    public static func kill(_ settings: SettingsList) throws {
+        var conf = Realm.Configuration()
+        try settings.affect(&conf)
+        try Realm.flushDatabase(with: conf)
     }
 }
-
-#endif // canImport(Combine)
-
