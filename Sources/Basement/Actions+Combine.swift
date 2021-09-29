@@ -71,11 +71,11 @@ extension Container {
 @available(OSX 10.15, iOS 13.0,  *)
 extension RealmCollection where Self: RealmSubscribable {
     
-    public func changesPublisher<T: RealmCollectionValue>(_ queue: DispatchQueue? = nil) -> AnyPublisher<CollectionChanges<T>, Error> {
-        let publisher = Container.RealmPublisher<CollectionChanges<T>, Error>() { subscriber in
+    public func changesPublisher(_ queue: DispatchQueue? = nil) -> AnyPublisher<CollectionChanges<Element>, Error> {
+        let publisher = Container.RealmPublisher<CollectionChanges<Element>, Error>() { subscriber in
             self.observe(on: queue) { changeset in
                 do {
-                    let value = try CollectionChanges<T>.init(changeset: changeset)
+                    let value = try CollectionChanges<Element>.init(changeset: changeset)
                     _ = subscriber.receive(value)
                 } catch {
                     subscriber.receive(completion: .failure(error))
