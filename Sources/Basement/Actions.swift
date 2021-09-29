@@ -54,4 +54,15 @@ extension Container {
         try settings.affect(&conf)
         try Realm.flushDatabase(with: conf)
     }
+    
+    public static func wipeAll(at path: FolderPath) throws {
+        let url = try path.url()
+        try FileManager.default.cleanFolder(at: url)
+        // Check results
+        let isEmpty = try FileManager.default.folderItems(at: url).isEmpty
+        guard isEmpty else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        try FileManager.default.removeItem(at: url)
+    }
 }
