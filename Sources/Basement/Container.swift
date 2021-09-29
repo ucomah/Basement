@@ -36,9 +36,13 @@ open class Container {
     }
     
     /// Main getter Realm instance.
-    func realm() throws -> Realm {
+    public var realm: Realm? {
+        try? wrapper().realm
+    }
+    
+    internal func wrapper() throws -> RealmWrapper {
         if let r = Self._realm.currentValue {
-            return r.realm
+            return r
         }
         let r = try RealmWrapper(conf: configuration, queue: self.queue)
         Container._realm.currentValue = r
@@ -47,6 +51,6 @@ open class Container {
             let part = !name.isEmpty ? name : String(describing: withUnsafePointer(to: Thread.current) { $0 })
             print("🗞 \(type(of: self)): new instance for queue \(part)")
         }
-        return r.realm
+        return r
     }
 }
