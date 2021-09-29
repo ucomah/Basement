@@ -66,3 +66,29 @@ extension Container {
         try FileManager.default.removeItem(at: url)
     }
 }
+
+// MARK: - Fast access
+
+public extension Container {
+    func store<T: Object>(_ item: T) throws {
+        try write { $0.add(item) }
+    }
+
+    func store<T>(_ items: T) throws where T: Sequence, T.Element: Object {
+        try write { $0.add(items) }
+    }
+}
+
+public extension Object {
+    func store(to container: Container) throws {
+        try container.store(self)
+    }
+}
+
+public extension Collection where Element: Object {
+    func store(to container: Container, update: Realm.UpdatePolicy = .modified) throws {
+        try container.write { (tr) in
+            tr.add(self, update: update)
+        }
+    }
+}
