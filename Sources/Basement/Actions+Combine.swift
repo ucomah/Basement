@@ -71,7 +71,7 @@ extension Container {
 @available(OSX 10.15, iOS 13.0,  *)
 extension RealmCollection where Self: RealmSubscribable {
     
-    func changesPublisher<T: RealmCollectionValue>(_ queue: DispatchQueue? = nil) -> AnyPublisher<CollectionChanges<T>, Error> {
+    public func changesPublisher<T: RealmCollectionValue>(_ queue: DispatchQueue? = nil) -> AnyPublisher<CollectionChanges<T>, Error> {
         let publisher = Container.RealmPublisher<CollectionChanges<T>, Error>() { subscriber in
             self.observe(on: queue) { changeset in
                 do {
