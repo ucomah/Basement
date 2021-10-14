@@ -23,7 +23,7 @@ extension Container {
     
     public func writeAsync<T: ThreadConfined>(_ obj: T,
                                               queue: DispatchQueue? = nil,
-                                              block: @escaping (T, WriteTransaction) throws -> Void,
+                                              block: @escaping (T, WriteTransaction) -> Void,
                                               errorHandler: @escaping ((_ error: Swift.Error) -> Void) = { _ in return }) {
         do {
             let wrapper = try self.wrapper()
