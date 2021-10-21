@@ -21,7 +21,7 @@ extension Realm.Configuration {
             self.fileaName = fileName
             self.protection = protection
         }
-        func affect(_ configuration: inout Realm.Configuration) throws {
+        public func affect(_ configuration: inout Realm.Configuration) throws {
             // Detect file name
             guard let name = self.fileaName ?? configuration.fileURL?.lastPathComponent else {
                 throw Realm.Error(.fileNotFound)
@@ -46,7 +46,7 @@ extension Realm.Configuration {
         public init(value: Bool = true) {
             self.value = value
         }
-        func affect(_ configuration: inout Realm.Configuration) throws {
+        public func affect(_ configuration: inout Realm.Configuration) throws {
             configuration.deleteRealmIfMigrationNeeded = value
         }
     }
@@ -56,7 +56,7 @@ extension Realm.Configuration {
         public init(value: @escaping MigrationBlock) {
             self.value = value
         }
-        func affect(_ configuration: inout Realm.Configuration) throws {
+        public func affect(_ configuration: inout Realm.Configuration) throws {
             configuration.migrationBlock = value
         }
     }
@@ -66,7 +66,7 @@ extension Realm.Configuration {
         public init(value: String?) {
             self.value = value
         }
-        func affect(_ configuration: inout Realm.Configuration) throws {
+        public func affect(_ configuration: inout Realm.Configuration) throws {
             configuration.inMemoryIdentifier = value
         }
     }
@@ -76,7 +76,7 @@ extension Realm.Configuration {
         public init(value: Set<CompactRule> = .default) {
             self.value = value
         }
-        func affect(_ configuration: inout Realm.Configuration) throws {
+        public func affect(_ configuration: inout Realm.Configuration) throws {
             configuration.shouldCompactOnLaunch = { (totalBytes, usedBytes) -> Bool in
                 // totalBytes refers to the size of the file on disk in bytes (data + free space)
                 // usedBytes refers to the number of bytes used by data in the file
@@ -102,26 +102,26 @@ public extension Set where Element == Container.Configuration.CompactRule {
 /// Protocol to determine a wrapper for `Realm.Configuration` items.
 /// Each conformer, can affect Realm's configuration so the set of conformers can
 /// build a new settings list.
-protocol RealmCofigurationAffecting {
+public protocol RealmCofigurationAffecting {
     func affect(_ configuration: inout Realm.Configuration) throws
 }
 
 extension Container.Configuration {
 
     @resultBuilder
-    struct SettingsBuilder {
+    public struct SettingsBuilder {
 
-        static func buildBlock(_ components: RealmCofigurationAffecting...) throws -> Container.Configuration {
+        public static func buildBlock(_ components: RealmCofigurationAffecting...) throws -> Container.Configuration {
             var config = Realm.Configuration()
             try components.forEach { try $0.affect(&config) }
             return config
         }
         
-        static func buildEither(first component: RealmCofigurationAffecting) -> RealmCofigurationAffecting {
+        public static func buildEither(first component: RealmCofigurationAffecting) -> RealmCofigurationAffecting {
             return component
         }
         
-        static func buildEither(second component: RealmCofigurationAffecting) -> RealmCofigurationAffecting {
+        public static func buildEither(second component: RealmCofigurationAffecting) -> RealmCofigurationAffecting {
             return component
         }
     }
