@@ -14,16 +14,16 @@ extension Realm.Configuration {
     
     public struct Folder: RealmCofigurationAffecting {
         let folder: FolderPath
-        let fileaName: String?
+        let fileName: String?
         let protection: FileProtectionType
         public init(folder: FolderPath, fileName: String? = nil, protection: FileProtectionType = .completeUnlessOpen) {
             self.folder = folder
-            self.fileaName = fileName
+            self.fileName = fileName
             self.protection = protection
         }
         public func affect(_ configuration: inout Realm.Configuration) throws {
             // Detect file name
-            guard let name = self.fileaName ?? configuration.fileURL?.lastPathComponent else {
+            guard let name = self.fileName ?? configuration.fileURL?.lastPathComponent else {
                 throw Realm.Error(.fileNotFound)
             }
             // Create folder
@@ -111,9 +111,13 @@ extension Container.Configuration {
     @resultBuilder
     public struct SettingsBuilder {
 
-        public static func buildBlock(_ components: RealmCofigurationAffecting...) throws -> Container.Configuration {
+        public static func buildBlock(_ components: RealmCofigurationAffecting...) -> Container.Configuration {
             var config = Realm.Configuration()
-            try components.forEach { try $0.affect(&config) }
+            do {
+                try components.forEach { try $0.affect(&config) }
+            } catch {
+                print("Configuration update failure: \(error)")
+            }
             return config
         }
         
