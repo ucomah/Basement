@@ -49,10 +49,8 @@ extension Container {
     }
 
     /// - WARNING: Removes all Realm files physically. Use carefully!
-    public static func kill(_ settings: SettingsList) throws {
-        var conf = Realm.Configuration()
-        try settings.affect(&conf)
-        try Realm.flushDatabase(with: conf)
+    public static func kill(_ configuration: Container.Configuration) throws {
+        try Realm.flushDatabase(with: configuration)
     }
     
     public static func wipeAll(at path: FolderPath) throws {

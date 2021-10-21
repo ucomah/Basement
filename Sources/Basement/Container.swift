@@ -7,22 +7,18 @@ import Foundation
 /// That is what Container does - it wraps each Realm instance and makes it thread safe.
 /// Also, it gives a tool like `Container.Configuration` which allows to easily manage Realm databases on disk.
 open class Container {
+    
+    public typealias Configuration = Realm.Configuration
 
-    /// Creates a new instance with a default configuration.
-    public static func `default`() throws -> Container { try Container(settings: SettingsList.default) }
+    /// Default configuration for global use
+    public static var defaultConfiguration: Configuration = .defaultConfiguration
     /// Thread safe instance of Realm
     private static let _realm: ThreadSpecificVariable<RealmWrapper> = .init()
     
     private let configuration: Realm.Configuration
     private let queue: DispatchQueue?
     
-    public convenience init(settings: RealmCofigurationAffecting = SettingsList.default, queue: DispatchQueue? = nil) throws {
-        var conf = Realm.Configuration()
-        try settings.affect(&conf)
-        try self.init(configuration: conf, queue: queue)
-    }
-    
-    init(configuration: Realm.Configuration, queue: DispatchQueue? = nil) throws {
+    public init(configuration: Realm.Configuration = Container.defaultConfiguration, queue: DispatchQueue? = nil) throws {
         self.configuration = configuration
         self.queue = queue
         if Container._realm.currentValue == nil || Container._realm.currentValue?.realm.configuration != configuration {
