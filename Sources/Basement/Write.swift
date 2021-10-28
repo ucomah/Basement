@@ -37,12 +37,9 @@ public final class WriteTransaction {
         let objectReference: ThreadSafeReference<T>? = passedObject.realm != nil ? ThreadSafeReference(to: passedObject) : nil
         let configuration = self.realm.configuration
         let queue = queue ?? backgroundQueue
-        queue.async { [weak self] in
+        queue.async {
             autoreleasepool {
                 do {
-                    guard let this = self else {
-                        throw Realm.Error(.fail)
-                    }
                     let realm = try Realm(configuration: configuration)
                     let object: T
                     if let ref = objectReference {
@@ -55,7 +52,43 @@ public final class WriteTransaction {
                     } else {
                         object = passedObject
                     }
-                    try closure(object, this)
+                    try realm.write {
+                        try closure(object, WriteTransaction(realm: .init(realm: realm)))
+                    }
+                } catch {
+                    errorHandler(error)
+                }
+            }
+        }
+    }
+    
+    public func async<T: ThreadConfined>(_ passedArray: [T],
+                                   queue: DispatchQueue? = nil,
+                                   errorHandler: @escaping ((_ error: Swift.Error) -> Void) = { _ in return },
+                                   closure: @escaping (([T], WriteTransaction) throws -> Void)) {
+        
+        let arrayReference: [ThreadSafeReference<T>]?
+        if let _ = passedArray.first(where: { $0.realm != nil }) {
+            arrayReference = passedArray.map { ThreadSafeReference(to: $0) }
+        } else {
+            arrayReference = nil
+        }
+        let configuration = self.realm.configuration
+        let queue = queue ?? backgroundQueue
+        queue.async {
+            autoreleasepool {
+                do {
+                    let realm = try Realm(configuration: configuration)
+                    let arr: [T]
+                    if let ref = arrayReference {
+                        // Resolve within the transaction to ensure you get the latest changes from other threads
+                        arr = ref.compactMap { realm.resolve($0) }
+                    } else {
+                        arr = passedArray
+                    }
+                    try realm.write {
+                        try closure(arr, WriteTransaction(realm: .init(realm: realm)))
+                    }
                 } catch {
                     errorHandler(error)
                 }

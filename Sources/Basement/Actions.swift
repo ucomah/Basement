@@ -44,6 +44,19 @@ extension Container {
         }
     }
     
+    public func writeAsync<T: ThreadConfined>(_ items: [T],
+                                              queue: DispatchQueue? = nil,
+                                              block: @escaping ([T], WriteTransaction) -> Void,
+                                              errorHandler: @escaping ((_ error: Swift.Error) -> Void) = { _ in return }) {
+        do {
+            let wrapper = try self.wrapper()
+            let transaction = WriteTransaction(realm: wrapper)
+            transaction.async(items, queue: queue, errorHandler: errorHandler, closure: block)
+        } catch {
+            errorHandler(error)
+        }
+    }
+    
     public func item<Item: Object, KeyType>(_ type: Item.Type, forPrimaryKey id: KeyType) -> Item? {
         try? self.realm().object(ofType: type, forPrimaryKey: id)
     }
