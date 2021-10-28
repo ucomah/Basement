@@ -54,7 +54,7 @@ class ViewController: UIViewController {
     // MARK: -
     
     lazy var colors: Results<Color> = {
-        try! Container().items(Color.self)!.sorted(byKeyPath: "time", ascending: false)
+        try! Container().items(Color.self).sorted(byKeyPath: "time", ascending: false)
     }()
     
     lazy var ticker: TickCounter = {
@@ -120,7 +120,7 @@ class ViewController: UIViewController {
             }
         }.store(in: &subscriptions)
         
-        try! Container().items(TickCounter.self)?.collectionPublisher.scan(0, { result, _ in
+        try! Container().items(TickCounter.self).collectionPublisher.scan(0, { result, _ in
             result + 1
         }).map {
             "\($0) changes"

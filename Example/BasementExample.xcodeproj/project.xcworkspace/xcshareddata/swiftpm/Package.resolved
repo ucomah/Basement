@@ -2,12 +2,21 @@
   "object": {
     "pins": [
       {
+        "package": "Basement",
+        "repositoryURL": "https://github.com/jeka-mel/Basement.git",
+        "state": {
+          "branch": "main",
+          "revision": "7143486571670060051ad3a59924d8e63bbc905d",
+          "version": null
+        }
+      },
+      {
         "package": "Realm",
         "repositoryURL": "https://github.com/realm/realm-cocoa.git",
         "state": {
           "branch": null,
-          "revision": "7ca0ce1dd58553d5be1ec9cc7283b068c256979d",
-          "version": "10.17.0"
+          "revision": "9f43d0da902c55b493d6c8bb63203764caa8acbe",
+          "version": "10.18.0"
         }
       },
       {
