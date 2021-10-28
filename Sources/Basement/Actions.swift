@@ -35,11 +35,11 @@ extension Container {
     }
     
     public func item<Item: Object, KeyType>(_ type: Item.Type, forPrimaryKey id: KeyType) -> Item? {
-        self.realm?.object(ofType: type, forPrimaryKey: id)
+        try? self.realm().object(ofType: type, forPrimaryKey: id)
     }
 
-    public func items<Item: Object>(_ type: Item.Type) throws -> Results<Item>? {
-        self.realm?.objects(type)
+    public func items<Item: Object>(_ type: Item.Type) throws -> Results<Item> {
+        try self.realm().objects(type)
     }
 
     public func deleteAll() throws {

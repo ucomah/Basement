@@ -32,8 +32,8 @@ open class Container {
     }
     
     /// Main getter Realm instance.
-    public var realm: Realm? {
-        try? wrapper().realm
+    public func realm() throws -> Realm {
+        try wrapper().realm
     }
     
     internal func wrapper() throws -> RealmWrapper {
