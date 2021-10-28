@@ -15,10 +15,20 @@ extension Container {
         let transaction = WriteTransaction(realm: wrapper)
         try wrapper.realm.write { try block(obj, transaction) }
     }
+    
+    public func write<T: Sequence>(_ obj: T, block: (T, WriteTransaction) throws -> Void) throws where T.Element: ThreadConfined {
+        let wrapper = try self.wrapper()
+        let transaction = WriteTransaction(realm: wrapper)
+        try wrapper.realm.write { try block(obj, transaction) }
+    }
  
     /// Performs write transaction into the new instance.
     public func instanceWrite<T: ThreadConfined>(_ obj: T, block: (T, WriteTransaction) -> Void) throws {
         try newInstance().write(obj, block: block)
+    }
+    
+    public func instanceWrite<T: Sequence>(_ items: T, block: (T, WriteTransaction) -> Void) throws where T.Element: ThreadConfined {
+        try newInstance().write(items, block: block)
     }
     
     public func writeAsync<T: ThreadConfined>(_ obj: T,
