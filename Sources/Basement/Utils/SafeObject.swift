@@ -2,7 +2,7 @@ import Foundation
 import RealmSwift
 import Realm
 
-protocol SafeObject: ThreadConfined { }
+public protocol SafeObject: ThreadConfined { }
 
 extension SafeObject {
     
