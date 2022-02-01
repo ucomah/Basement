@@ -32,7 +32,7 @@ extension Realm.Configuration {
             url.appendPathComponent(name)
             configuration.fileURL = url
             // Set protection level
-            guard let path = configuration.fileURL?.relativePath else {
+            guard let path = configuration.fileURL?.deletingLastPathComponent().path else {
                 return
             }
             var attibutes = (try? FileManager.default.attributesOfItem(atPath: path)) ?? .init()
