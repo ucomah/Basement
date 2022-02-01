@@ -92,6 +92,16 @@ extension Realm.Configuration {
             }
         }
     }
+    
+    public struct EncryptionKey: RealmCofigurationAffecting {
+        let value: Data?
+        public init(value: Data?) {
+            self.value = value
+        }
+        public func affect(_ configuration: inout Realm.Configuration) throws {
+            configuration.encryptionKey = value
+        }
+    }
 }
 
 public extension Set where Element == Container.Configuration.CompactRule {
