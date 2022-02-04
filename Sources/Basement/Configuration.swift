@@ -102,6 +102,18 @@ extension Realm.Configuration {
             configuration.encryptionKey = value
         }
     }
+    
+    /// Generates a new (uses existing if present) encryption key and stores it to Keychain.
+    /// https://docs.mongodb.com/realm/sdk/swift/advanced-guides/encrypt-a-realm/
+    public struct RandomEncryptionKey: RealmCofigurationAffecting {
+        private let value: Data
+        public init() {
+            self.value = .getEncryptionKey()
+        }
+        public func affect(_ configuration: inout Realm.Configuration) throws {
+            configuration.encryptionKey = value
+        }
+    }
 }
 
 public extension Set where Element == Container.Configuration.CompactRule {
