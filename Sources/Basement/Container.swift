@@ -3,7 +3,7 @@ import Foundation
 
 /// A Root class wrapper for Realm database.
 /// Since Realm is thread contained, we need to make sure that it's always accessed from the same queue it was initialized.
-/// Other words, each `Realm()` instance has to be constructed for any perticular queue you're accessing it at the moment.
+/// Other words, each `Realm()` instance has to be constructed for any particular queue you're accessing it at the moment.
 /// That is what Container does - it wraps each Realm instance and makes it thread safe.
 /// Also, it gives a tool like `Container.Configuration` which allows to easily manage Realm databases on disk.
 open class Container {

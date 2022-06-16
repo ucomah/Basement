@@ -12,7 +12,7 @@ extension Realm.Configuration {
         case freeSpaceDelta(Double)
     }
     
-    public struct Folder: RealmCofigurationAffecting {
+    public struct Folder: RealmConfigurationAffecting {
         let folder: FolderPath
         let fileName: String?
         let protection: FileProtectionType
@@ -41,7 +41,7 @@ extension Realm.Configuration {
         }
     }
     
-    public struct DeleteOnMigration: RealmCofigurationAffecting {
+    public struct DeleteOnMigration: RealmConfigurationAffecting {
         let value: Bool
         public init(value: Bool = true) {
             self.value = value
@@ -51,7 +51,7 @@ extension Realm.Configuration {
         }
     }
     
-    public struct Migration: RealmCofigurationAffecting {
+    public struct Migration: RealmConfigurationAffecting {
         let value: MigrationBlock
         public init(value: @escaping MigrationBlock) {
             self.value = value
@@ -61,7 +61,7 @@ extension Realm.Configuration {
         }
     }
     
-    public struct InMemoryIdentifier: RealmCofigurationAffecting {
+    public struct InMemoryIdentifier: RealmConfigurationAffecting {
         let value: String?
         public init(value: String?) {
             self.value = value
@@ -71,7 +71,7 @@ extension Realm.Configuration {
         }
     }
     
-    public struct CompactOnLaunch: RealmCofigurationAffecting {
+    public struct CompactOnLaunch: RealmConfigurationAffecting {
         let value: Set<CompactRule>
         public init(value: Set<CompactRule> = .default) {
             self.value = value
@@ -93,7 +93,7 @@ extension Realm.Configuration {
         }
     }
     
-    public struct EncryptionKey: RealmCofigurationAffecting {
+    public struct EncryptionKey: RealmConfigurationAffecting {
         let value: Data?
         public init(value: Data?) {
             self.value = value
@@ -105,7 +105,7 @@ extension Realm.Configuration {
     
     /// Generates a new (uses existing if present) encryption key and stores it to Keychain.
     /// https://docs.mongodb.com/realm/sdk/swift/advanced-guides/encrypt-a-realm/
-    public struct RandomEncryptionKey: RealmCofigurationAffecting {
+    public struct RandomEncryptionKey: RealmConfigurationAffecting {
         private let value: Data
         public init() {
             self.value = .getEncryptionKey()
@@ -124,7 +124,7 @@ public extension Set where Element == Container.Configuration.CompactRule {
 /// Protocol to determine a wrapper for `Realm.Configuration` items.
 /// Each conformer, can affect Realm's configuration so the set of conformers can
 /// build a new settings list.
-public protocol RealmCofigurationAffecting {
+public protocol RealmConfigurationAffecting {
     func affect(_ configuration: inout Realm.Configuration) throws
 }
 
@@ -133,7 +133,7 @@ extension Container.Configuration {
     @resultBuilder
     public struct SettingsBuilder {
 
-        public static func buildBlock(_ components: RealmCofigurationAffecting...) -> Container.Configuration {
+        public static func buildBlock(_ components: RealmConfigurationAffecting...) -> Container.Configuration {
             var config = Realm.Configuration()
             do {
                 try components.forEach { try $0.affect(&config) }
@@ -143,11 +143,11 @@ extension Container.Configuration {
             return config
         }
         
-        public static func buildEither(first component: RealmCofigurationAffecting) -> RealmCofigurationAffecting {
+        public static func buildEither(first component: RealmConfigurationAffecting) -> RealmConfigurationAffecting {
             return component
         }
         
-        public static func buildEither(second component: RealmCofigurationAffecting) -> RealmCofigurationAffecting {
+        public static func buildEither(second component: RealmConfigurationAffecting) -> RealmConfigurationAffecting {
             return component
         }
     }
