@@ -9,7 +9,7 @@ extension Container {
         try wrapper.realm.write { try block(transaction) }
     }
     
-    /// Write transation in current thread (queue)
+    /// Write transaction in current thread (queue)
     public func write<T: ThreadConfined>(_ obj: T, block: (T, WriteTransaction) throws -> Void) throws {
         let wrapper = try self.wrapper()
         let transaction = WriteTransaction(realm: wrapper)

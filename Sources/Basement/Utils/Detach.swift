@@ -37,7 +37,7 @@ extension List: DetachableObject {
                 guard let detached = detachable.detached() as? Element else { return }
                 result.append(detached)
             } else {
-                result.append($0) // Primtives are being passed by value - don't need to recreate
+                result.append($0) // Primitives are being passed by value - don't need to recreate
             }
         }
         return result
