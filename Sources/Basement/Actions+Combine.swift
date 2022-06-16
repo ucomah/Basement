@@ -3,7 +3,7 @@ import RealmSwift
 #if canImport(Combine)
 import Combine
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 extension Container {
 
     struct RealmPublisher<Output, Failure: Swift.Error>: Publisher {
@@ -47,7 +47,7 @@ extension Container {
 
 }
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 extension Container {
     
     public func publishWrite<T: ThreadConfined>(_ obj: T,
@@ -68,7 +68,7 @@ extension Container {
     }
 }
 
-@available(OSX 10.15, iOS 13.0,  *)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 extension RealmCollection where Self: RealmSubscribable {
     
     public func changesPublisher(_ queue: DispatchQueue? = nil) -> AnyPublisher<CollectionChanges<Element>, Error> {
